@@ -19,6 +19,8 @@ export default function SubjectListPage() {
     return data?.pages?.flatMap((page) => page.data) ?? [];
   }, [data]);
 
+
+  
   return (
     <div className="space-y-6">
       <Heading path={["Subjects"]} />
@@ -103,29 +105,29 @@ export default function SubjectListPage() {
                     {/* Column: Code Badge */}
                     <td className="px-6 py-4 whitespace-nowrap font-medium">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400 border border-indigo-100/40 dark:border-indigo-900/30">
-                        {subject.code}
+                        {subject?.code}
                       </span>
                     </td>
 
                     {/* Column: Subject Name */}
-                    <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">{subject.name}</td>
+                    <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">{subject?.name}</td>
 
                     {/* Column: Department Badge */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
-                        {subject.department.name}
+                        {subject?.departmentName ?? "N/A"}
                       </span>
                     </td>
 
                     {/* Column: Truncated Description */}
                     <td className="px-6 py-4 max-w-xs md:max-w-sm">
-                      <p className="text-slate-500 dark:text-slate-400 truncate line-clamp-2 whitespace-normal leading-relaxed">{subject.description}</p>
+                      <p className="text-slate-500 dark:text-slate-400 truncate line-clamp-2 whitespace-normal leading-relaxed">{subject?.description}</p>
                     </td>
 
                     {/* Column: Action Row */}
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <Link
-                        to={`/subjects/show/${subject.id}`}
+                        to={`/subjects/show/${subject?.id}`}
                         className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white shadow-sm transition-colors"
                       >
                         View

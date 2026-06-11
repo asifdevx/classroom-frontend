@@ -1,8 +1,14 @@
 import Heading from "@/components/common/Heading";
 import { UploadWidget } from "@/components/common/upload-widget";
+import { useAllSubjects } from "@/hooks/useSubjects";
+import { useUsersDetails } from "@/hooks/useUsers";
+import { User } from "@/types";
+import API from "@/utils/API";
+import { getErrMsg } from "@/utils/getErrorMsg";
 import { classSchema } from "@/utils/schema";
+import { toast } from "@/utils/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FieldErrors, FieldValues, Path, Resolver, SubmitHandler, useForm, UseFormRegister, useWatch } from "react-hook-form";
 import z from "zod";
 
@@ -11,24 +17,12 @@ type ClassFormValues = z.infer<typeof classSchema>;
 // ==========================================
 // 2. MOCK CONFIGURATIONS
 // ==========================================
-const MOCK_SUBJECTS = [
-  { id: 101, name: "Introduction to Biology", code: "BIO-101" },
-  { id: 102, name: "General Chemistry", code: "CHEM-202" },
-  { id: 103, name: "Multivariable Calculus", code: "MATH-301" },
-];
-
-const MOCK_TEACHERS = [
-  { id: "t1", name: "Prof. Sarah Jenkins" },
-  { id: "t2", name: "Dr. Alan Turing" },
-  { id: "t3", name: "Dr. Rosalind Franklin" },
-];
 
 // ==========================================
 // 3. CORE CLASSES CREATE COMPONENT
 // ==========================================
 export default function ClassesCreate() {
   const [subjectsLoading, setSubjectsLoading] = useState(true);
-  const [teachersLoading, setTeachersLoading] = useState(true);
 
   const {
     register,
@@ -54,22 +48,45 @@ export default function ClassesCreate() {
     name: "bannerCldPubId",
   });
 
+  ///! ----  HOOks
+  const { data: teacherDetails, isLoading: teachersLoading } = useUsersDetails("", "teacher");
+  const { data } = useAllSubjects("", "all");
+
+  const subjectOptions = useMemo(() => {
+    return (
+      data?.pages?.flatMap((page) =>
+        page.data.map((s: { id: number; name: string; code: string }) => ({
+          value: s.id.toString(),
+          label: `${s.name} (${s.code})`,
+        })),
+      ) ?? []
+    );
+  }, [data]);
+
+  const teacherOptions = useMemo(
+    () =>
+      teacherDetails?.data?.map((teacher: User) => ({
+        value: teacher.id,
+        label: teacher.name,
+      })) || [],
+    [teacherDetails?.data],
+  );
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setSubjectsLoading(false);
-      setTeachersLoading(false);
     }, 400);
     return () => clearTimeout(timer);
   }, []);
 
-  const onSubmit: SubmitHandler<ClassFormValues> = async (values) => {
-    try {
-      console.log("Submitting Clean Form Data:", values);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    } catch (error) {
-      console.error("Error creating class:", error);
-    }
-  };
+ const onSubmit: SubmitHandler<ClassFormValues> = async (values) => {
+   toast.promise(API.post("/classes", values), {
+     loading: "Creating class…",
+     success: (res) => res.data?.message ?? "Class created successfully!",
+     error: (err) => getErrMsg(err) ?? "Failed to create class",
+   });
+
+ };
 
   return (
     <div className="space-y-6">
@@ -114,7 +131,7 @@ export default function ClassesCreate() {
               required
               disabled={subjectsLoading}
               placeholder={subjectsLoading ? "Loading subjects..." : "Select a subject"}
-              options={MOCK_SUBJECTS.map((s) => ({ value: s.id.toString(), label: `${s.name} (${s.code})` }))}
+              options={subjectOptions}
               register={register}
               errors={errors}
               valueAsNumber
@@ -126,7 +143,7 @@ export default function ClassesCreate() {
               required
               disabled={teachersLoading}
               placeholder={teachersLoading ? "Loading teachers..." : "Select a teacher"}
-              options={MOCK_TEACHERS.map((t) => ({ value: t.id, label: t.name }))}
+              options={teacherOptions}
               register={register}
               errors={errors}
             />
