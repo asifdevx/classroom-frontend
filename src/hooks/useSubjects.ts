@@ -20,8 +20,9 @@ export const useAllSubjects = (search: string, department: string) =>
 
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      const { page, totalPages } = lastPage.pagination;
-      return page < totalPages ? page + 1 : undefined;
+      const currentPage = lastPage.pagination.page;
+      const totalPages = lastPage.pagination.totalPages;
+      return currentPage < totalPages ? currentPage + 1 : undefined;
     },
     enabled: true,
     staleTime: 2 * 60 * 1000,
