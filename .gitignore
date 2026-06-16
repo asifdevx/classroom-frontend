@@ -1,7 +1,8 @@
 # Logs
+
 logs
-*.log
-npm-debug.log*
+_.log
+npm-debug.log_
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
@@ -10,23 +11,21 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-*.local
+\*.local
 
 # Editor directories and files
-.vscode/*
+
+.vscode/_
 !.vscode/extensions.json
 .idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+_.suo
+_.ntvs_
+_.njsproj
+_.sln
+\*.sw?
 
-
-
-# Package json
-package-lock.json
-pnpm-lock.yaml
-# env
 .env
+
+
+pnpm-lock.yaml
