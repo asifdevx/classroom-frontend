@@ -866,6 +866,14 @@ const CRUD_OPERATOR_LABELS: Record<
     i18nKey: "table.filter.operator.nendswiths",
     defaultLabel: "Not ends with (case sensitive)",
   },
+  eqs: {
+    i18nKey: "",
+    defaultLabel: ""
+  },
+  nes: {
+    i18nKey: "",
+    defaultLabel: ""
+  }
 };
 
 export type DataTableFilterOperatorSelectProps = {
